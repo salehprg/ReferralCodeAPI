@@ -16,7 +16,7 @@ namespace ReferralCodeAPI
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseMySQL(ConfigDatabase.conStr);
+            optionsBuilder.UseNpgsql(ConfigDatabase.conStr);
         }
 
         public DbSet<ReferralCode> referralCodes {get;set;}

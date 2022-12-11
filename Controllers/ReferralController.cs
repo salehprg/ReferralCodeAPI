@@ -28,9 +28,11 @@ namespace ReferralCodeAPI.Controllers
                 ReferralCode referralCode = context.referralCodes.Where(x => x.referralCode == referralValidity_Model.referralCode).FirstOrDefault();
                 if(referralCode != null)
                 {
-                    if(!referralCode.used)
+                    if(!referralCode.used || referralCode.phone_guid == referralValidity_Model.guid)
                     {
                         referralCode.used = true;
+                        referralCode.phone_guid = referralValidity_Model.guid;
+
                         context.referralCodes.Update(referralCode);
                         return Ok("OK");
                     }

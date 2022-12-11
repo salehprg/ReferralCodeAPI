@@ -5,6 +5,7 @@ namespace ReferralCodeAPI
         public int Id {get;set;}
         public int userid {get;set;}
         public string referralCode {get;set;}
+        public string phone_guid {get;set;}
         public bool used {get;set;}
     }
 }
