@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace ReferralCodeAPI.Controllers
 {
@@ -20,21 +21,32 @@ namespace ReferralCodeAPI.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public IActionResult CheckReferral(ReferralValidity_Model referralValidity_Model)
+        [HttpPost]
+        public IActionResult CheckReferral([FromForm]ReferralValidity_Model referralValidity_Model)
         {
             try
             {
-                ReferralCode referralCode = context.referralCodes.Where(x => x.referralCode == referralValidity_Model.referralCode).FirstOrDefault();
+                string license = RSA.Decrypt(referralValidity_Model.referralCode);
+                 if(license == null)
+                    return BadRequest("License invalid");
+
+                ReferralCode referralCode = context.referralCodes.Where(x => x.referralCode == license).FirstOrDefault();
                 if(referralCode != null)
                 {
-                    if(!referralCode.used || referralCode.phone_guid == referralValidity_Model.guid)
+                    if(!referralCode.used)
                     {
                         referralCode.used = true;
                         referralCode.phone_guid = referralValidity_Model.guid;
+                        referralCode.nickname = referralValidity_Model.nickname;
 
                         context.referralCodes.Update(referralCode);
-                        return Ok("OK");
+                        context.SaveChanges();
+
+                        return Ok();
+                    }
+                    if(referralCode.phone_guid == referralValidity_Model.guid)
+                    {
+                        return Ok();
                     }
                     
                     return BadRequest("Code Used");
@@ -42,7 +54,7 @@ namespace ReferralCodeAPI.Controllers
 
                 return BadRequest("Not Found");
             }
-            catch
+            catch (Exception ex)
             {
                 return BadRequest();
             }

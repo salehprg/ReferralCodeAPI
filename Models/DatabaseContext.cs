@@ -20,5 +20,6 @@ namespace ReferralCodeAPI
         }
 
         public DbSet<ReferralCode> referralCodes {get;set;}
+        public DbSet<ScoreBoard> scoreBoards {get;set;}
     }
 }
