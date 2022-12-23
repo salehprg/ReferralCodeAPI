@@ -35,11 +35,23 @@ namespace ReferralCodeAPI.Controllers
                 {
                     if(!referralCode.used)
                     {
+                        bool checkNickname = context.referralCodes.Where(x => x.nickname == referralValidity_Model.nickname).Any();
+                        if(checkNickname)
+                            return BadRequest("Nickname already taken");
+
                         referralCode.used = true;
                         referralCode.phone_guid = referralValidity_Model.guid;
                         referralCode.nickname = referralValidity_Model.nickname;
 
                         context.referralCodes.Update(referralCode);
+                        context.SaveChanges();
+
+                        ScoreBoard scoreBoard = new ScoreBoard();
+                        scoreBoard.referal_id = referralCode.Id;
+                        scoreBoard.score = 0;
+                        scoreBoard.time = DateTime.Now;
+
+                        context.scoreBoards.Add(scoreBoard);
                         context.SaveChanges();
 
                         return Ok();
@@ -49,7 +61,7 @@ namespace ReferralCodeAPI.Controllers
                         return Ok();
                     }
                     
-                    return BadRequest("Code Used");
+                    return BadRequest("License Used");
                 }
 
                 return BadRequest("Not Found");

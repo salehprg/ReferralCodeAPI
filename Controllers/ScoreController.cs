@@ -67,13 +67,14 @@ namespace ReferralCodeAPI.Controllers
                 ReferralCode referralCode = context.referralCodes.Where(x => x.phone_guid == guid).FirstOrDefault();
                 if(referralCode != null && referralCode.used)
                 {
-                    ScoreBoard scoreBoard = new ScoreBoard();
-                    scoreBoard.referal_id = referralCode.Id;
-                    scoreBoard.score = scoreBoard_Model.score;
-                    scoreBoard.time = DateTime.Now;
-                    
-                    context.scoreBoards.Add(scoreBoard);
-                    context.SaveChanges();
+                    ScoreBoard scoreBoard = context.scoreBoards.Where(x => x.referal_id == referralCode.Id).FirstOrDefault();
+                    if(scoreBoard.score < scoreBoard_Model.score)
+                    {
+                        scoreBoard.score = scoreBoard_Model.score;
+                        scoreBoard.time = DateTime.Now;
+                        context.scoreBoards.Update(scoreBoard);
+                        context.SaveChanges();
+                    }
 
                     return Ok();
                 }
