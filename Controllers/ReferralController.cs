@@ -54,11 +54,11 @@ namespace ReferralCodeAPI.Controllers
                         context.scoreBoards.Add(scoreBoard);
                         context.SaveChanges();
 
-                        return Ok();
+                        return Ok(referralCode.nickname);
                     }
                     if(referralCode.phone_guid == referralValidity_Model.guid)
                     {
-                        return Ok();
+                        return Ok(referralCode.nickname);
                     }
                     
                     return BadRequest("License Used");

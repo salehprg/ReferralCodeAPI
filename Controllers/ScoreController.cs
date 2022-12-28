@@ -31,7 +31,7 @@ namespace ReferralCodeAPI.Controllers
                 ReferralCode referralCode = context.referralCodes.Where(x => x.phone_guid == _guid).FirstOrDefault();
                 if(referralCode != null && referralCode.used)
                 {
-                    List<ScoreBoard> scoreBoards = context.scoreBoards.OrderByDescending(x => x.score).Take(5).ToList();
+                    List<ScoreBoard> scoreBoards = context.scoreBoards.OrderByDescending(x => x.score).Take(10).ToList();
                     List<ScoreBoard_Model> scoreBoard_Models = new List<ScoreBoard_Model>();
 
                     foreach (var score in scoreBoards)
